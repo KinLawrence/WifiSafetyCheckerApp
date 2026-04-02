@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import scrolledtext, filedialog, messagebox
 import subprocess
 import datetime
+import csv
+import re
 
 def scan_wifi():
     """
@@ -79,28 +81,47 @@ def analyze(output_widget):
 
 def export_results(output_widget):
     """
-    Exports the content of the output widget to a .txt file.
+    Exports the content of the output widget to a .txt or .csv file.
     """
     content = output_widget.get(1.0, tk.END).strip()
     if not content:
         messagebox.showwarning("Export Warning", "No scan results to export. Please run a scan first.")
         return
 
-    # Open file dialog to choose save location
+    # Open file dialog to choose save location and format
     file_path = filedialog.asksaveasfilename(
         defaultextension=".txt",
-        filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
-        initialfile=f"wifi_scan_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+        filetypes=[("Text files", "*.txt"), ("CSV files", "*.csv"), ("All files", "*.*")],
+        initialfile=f"wifi_scan_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}",
         title="Save Scan Results"
     )
 
     if file_path:
         try:
-            with open(file_path, "w", encoding="utf-8") as file:
-                file.write(f"WiFi Safety Scan Results\n")
-                file.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                file.write("-" * 30 + "\n")
-                file.write(content)
+            if file_path.lower().endswith(".csv"):
+                # Export as CSV
+                with open(file_path, "w", encoding="utf-8", newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(["SSID", "Security Score", "Scale"])
+                    
+                    # Parse the content from the widget: "SSID → Security Score: SCORE/100"
+                    lines = content.split('\n')
+                    for line in lines:
+                        if "→ Security Score:" in line:
+                            # Using regex to capture SSID and Score
+                            match = re.search(r"^(.*?) → Security Score: (\d+)/100", line)
+                            if match:
+                                ssid = match.group(1).strip()
+                                score = match.group(2).strip()
+                                writer.writerow([ssid, score, "100"])
+            else:
+                # Export as TXT
+                with open(file_path, "w", encoding="utf-8") as file:
+                    file.write(f"WiFi Safety Scan Results\n")
+                    file.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                    file.write("-" * 30 + "\n")
+                    file.write(content)
+            
             messagebox.showinfo("Export Successful", f"Results exported to {file_path}")
         except Exception as e:
             messagebox.showerror("Export Error", f"Failed to save file: {e}")
@@ -126,8 +147,8 @@ def main():
     scan_btn = tk.Button(btn_frame, text="Scan Networks", command=lambda: analyze(output_display))
     scan_btn.pack(side=tk.LEFT, padx=5)
 
-    # Export button
-    export_btn = tk.Button(btn_frame, text="Export to .txt", command=lambda: export_results(output_display))
+    # Export button (Format selection happens in the dialog)
+    export_btn = tk.Button(btn_frame, text="Export Results...", command=lambda: export_results(output_display))
     export_btn.pack(side=tk.LEFT, padx=5)
 
     # Pack the output display into the window
