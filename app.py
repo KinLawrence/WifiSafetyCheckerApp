@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import scrolledtext
+from tkinter import scrolledtext, filedialog, messagebox
 import subprocess
+import datetime
 
 def scan_wifi():
     """
@@ -76,6 +77,34 @@ def analyze(output_widget):
         # Display the result to the user
         output_widget.insert(tk.END, f"{ssid} → Security Score: {score}/100\n")
 
+def export_results(output_widget):
+    """
+    Exports the content of the output widget to a .txt file.
+    """
+    content = output_widget.get(1.0, tk.END).strip()
+    if not content:
+        messagebox.showwarning("Export Warning", "No scan results to export. Please run a scan first.")
+        return
+
+    # Open file dialog to choose save location
+    file_path = filedialog.asksaveasfilename(
+        defaultextension=".txt",
+        filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+        initialfile=f"wifi_scan_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+        title="Save Scan Results"
+    )
+
+    if file_path:
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write(f"WiFi Safety Scan Results\n")
+                file.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                file.write("-" * 30 + "\n")
+                file.write(content)
+            messagebox.showinfo("Export Successful", f"Results exported to {file_path}")
+        except Exception as e:
+            messagebox.showerror("Export Error", f"Failed to save file: {e}")
+
 def main():
     """
     Main entry point for the WiFi Safety Checker application.
@@ -89,10 +118,17 @@ def main():
     # Create the text output area first so it can be passed to the analyze command
     output_display = scrolledtext.ScrolledText(root, width=60, height=20)
     
-    # Create the trigger button
-    # Using a lambda to pass the output_display widget to the analyze function
-    btn = tk.Button(root, text="Scan Networks", command=lambda: analyze(output_display))
-    btn.pack(pady=10)
+    # Create the trigger buttons container
+    btn_frame = tk.Frame(root)
+    btn_frame.pack(pady=10)
+
+    # Scan button
+    scan_btn = tk.Button(btn_frame, text="Scan Networks", command=lambda: analyze(output_display))
+    scan_btn.pack(side=tk.LEFT, padx=5)
+
+    # Export button
+    export_btn = tk.Button(btn_frame, text="Export to .txt", command=lambda: export_results(output_display))
+    export_btn.pack(side=tk.LEFT, padx=5)
 
     # Pack the output display into the window
     output_display.pack(padx=10, pady=10)
