@@ -135,24 +135,43 @@ def main():
     root = tk.Tk()
     root.title("WiFi Safety Checker")
 
-    # Create a layout container for the UI elements
-    # Create the text output area first so it can be passed to the analyze command
-    output_display = scrolledtext.ScrolledText(root, width=60, height=20)
+    # Enlarge the GUI to 1/4 of the screen (1/2 width and 1/2 height)
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
     
+    width = screen_width // 2
+    height = screen_height // 2
+    
+    # Calculate position to center the window
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 2
+    
+    root.geometry(f"{width}x{height}+{x}+{y}")
+
+    # Ensure the window "pops out" (brings it to front and focuses)
+    root.lift()
+    root.attributes('-topmost', True)
+    root.after(100, lambda: root.attributes('-topmost', False))
+    root.focus_force()
+
     # Create the trigger buttons container
     btn_frame = tk.Frame(root)
     btn_frame.pack(pady=10)
+
+    # Create the text output area
+    # Pack it with expand=True and fill=tk.BOTH to fill the remaining 1/4 screen area
+    output_display = scrolledtext.ScrolledText(root)
 
     # Scan button
     scan_btn = tk.Button(btn_frame, text="Scan Networks", command=lambda: analyze(output_display))
     scan_btn.pack(side=tk.LEFT, padx=5)
 
-    # Export button (Format selection happens in the dialog)
+    # Export button
     export_btn = tk.Button(btn_frame, text="Export Results...", command=lambda: export_results(output_display))
     export_btn.pack(side=tk.LEFT, padx=5)
 
     # Pack the output display into the window
-    output_display.pack(padx=10, pady=10)
+    output_display.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 
     # Start the Tkinter event loop
     root.mainloop()
