@@ -154,24 +154,39 @@ def main():
     root.after(100, lambda: root.attributes('-topmost', False))
     root.focus_force()
 
-    # Create the trigger buttons container
+    # Create the trigger buttons container first and pack at bottom
     btn_frame = tk.Frame(root)
-    btn_frame.pack(pady=10)
+    btn_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=20)
 
     # Create the text output area
-    # Pack it with expand=True and fill=tk.BOTH to fill the remaining 1/4 screen area
-    output_display = scrolledtext.ScrolledText(root)
-
-    # Scan button
-    scan_btn = tk.Button(btn_frame, text="Scan Networks", command=lambda: analyze(output_display))
-    scan_btn.pack(side=tk.LEFT, padx=5)
-
-    # Export button
-    export_btn = tk.Button(btn_frame, text="Export Results...", command=lambda: export_results(output_display))
-    export_btn.pack(side=tk.LEFT, padx=5)
-
-    # Pack the output display into the window
+    output_display = scrolledtext.ScrolledText(root, font=("Consolas", 11))
+    # Pack it to fill the remaining space
     output_display.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
+
+    # Define a larger, more visible font for the buttons
+    btn_font = ("Helvetica", 14, "bold")
+
+    # Scan button - High visibility styling
+    scan_btn = tk.Button(btn_frame, 
+                         text="Scan Networks", 
+                         font=btn_font, 
+                         bg="#2ecc71", 
+                         fg="white",
+                         padx=30, 
+                         pady=15,
+                         command=lambda: analyze(output_display))
+    scan_btn.pack(side=tk.LEFT, expand=True, padx=20)
+
+    # Export button - High visibility styling
+    export_btn = tk.Button(btn_frame, 
+                           text="Export Results...", 
+                           font=btn_font, 
+                           bg="#3498db", 
+                           fg="white",
+                           padx=30, 
+                           pady=15,
+                           command=lambda: export_results(output_display))
+    export_btn.pack(side=tk.LEFT, expand=True, padx=20)
 
     # Start the Tkinter event loop
     root.mainloop()
