@@ -154,6 +154,18 @@ def main():
     root.after(100, lambda: root.attributes('-topmost', False))
     root.focus_force()
 
+    # Real-time clock display (Top Left)
+    time_label = tk.Label(root, font=("Helvetica", 10, "italic"), fg="#7f8c8d")
+    time_label.pack(side=tk.TOP, anchor="nw", padx=15, pady=(10, 0))
+
+    def refresh_clock():
+        """Updates the real-time clock label every second."""
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        time_label.config(text=f"System Time: {now}")
+        root.after(1000, refresh_clock)
+
+    refresh_clock()
+
     # Create the trigger buttons container first and pack at bottom
     btn_frame = tk.Frame(root)
     btn_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=20)
