@@ -15,6 +15,42 @@ def scan_wifi():
                             capture_output=True, text=True)
     return result.stdout
 
+def get_current_connection():
+    """
+    Retrieves the currently connected WiFi SSID and its local IP address.
+    """
+    ssid = ""
+    ip = ""
+    interface_name = ""
+    
+    # Get current interface info to find SSID and Interface Name
+    try:
+        if_result = subprocess.run(["netsh", "wlan", "show", "interfaces"], capture_output=True, text=True)
+        for line in if_result.stdout.split("\n"):
+            if "Name" in line:
+                parts = line.split(":", 1)
+                if len(parts) > 1:
+                    interface_name = parts[1].strip()
+            elif "SSID" in line and "BSSID" not in line:
+                parts = line.split(":", 1)
+                if len(parts) > 1:
+                    ssid = parts[1].strip()
+        
+        # If we have an interface name, get its IP specifically
+        if interface_name:
+            cfg_result = subprocess.run(["netsh", "interface", "ip", "show", "config", f"name={interface_name}"], 
+                                         capture_output=True, text=True)
+            for line in cfg_result.stdout.split("\n"):
+                if "IP Address" in line:
+                    parts = line.split(":", 1)
+                    if len(parts) > 1:
+                        ip = parts[1].strip()
+                        break
+    except Exception:
+        pass
+        
+    return ssid, ip
+
 def analyze(output_widget):
     """
     Parses the WiFi scan data, calculates a safety score for each network,
@@ -53,6 +89,9 @@ def analyze(output_widget):
     if current:
         networks.append(current)
 
+    # Get the current connection info for reference
+    current_ssid, current_ip = get_current_connection()
+
     # Analyze each network and calculate a safety score
     for net in networks:
         score = 100  # Start with a perfect score
@@ -77,7 +116,11 @@ def analyze(output_widget):
             score -= 30
 
         # Display the result to the user
-        output_widget.insert(tk.END, f"{ssid} → Security Score: {score}/100\n")
+        display_name = ssid
+        if ssid == current_ssid and current_ip:
+            display_name = f"{ssid} ({current_ip})"
+            
+        output_widget.insert(tk.END, f"{display_name} → Security Score: {score}/100\n")
 
 def export_results(output_widget):
     """
@@ -205,4 +248,4 @@ def main():
 
 # Execute the main function if the script is run directly
 if __name__ == "__main__":
-    main()
+    main()

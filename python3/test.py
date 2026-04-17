@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import tkinter as tk
-import app
+import python3.app
 
 class TestWifiSafetyChecker(unittest.TestCase):
     def setUp(self):
