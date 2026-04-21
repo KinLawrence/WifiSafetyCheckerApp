@@ -76,6 +76,42 @@ QString getRisk(int score) {
     return "LOW RISK";
 }
 
+// Get current connection info (SSID and IP)
+void getCurrentConnection(QString &currentSsid, QString &currentIp) {
+    QProcess process;
+    process.start("netsh", QStringList() << "wlan" << "show" << "interfaces");
+    process.waitForFinished();
+    QString ifData = process.readAllStandardOutput();
+
+    QString interfaceName;
+    QStringList lines = ifData.split("\n");
+    for (const QString &line : lines) {
+        if (line.contains("Name")) {
+            QStringList parts = line.split(":");
+            if (parts.size() > 1) interfaceName = parts[1].trimmed();
+        } else if (line.contains("SSID") && !line.contains("BSSID")) {
+            QStringList parts = line.split(":");
+            if (parts.size() > 1) currentSsid = parts[1].trimmed();
+        }
+    }
+
+    if (!interfaceName.isEmpty()) {
+        process.start("netsh", QStringList() << "interface" << "ip" << "show" << "config" << "name=" + interfaceName);
+        process.waitForFinished();
+        QString cfgData = process.readAllStandardOutput();
+        QStringList cfgLines = cfgData.split("\n");
+        for (const QString &line : cfgLines) {
+            if (line.contains("IP Address")) {
+                QStringList parts = line.split(":");
+                if (parts.size() > 1) {
+                    currentIp = parts[1].trimmed();
+                    break;
+                }
+            }
+        }
+    }
+}
+
 class WifiChecker : public QWidget {
 public:
     WifiChecker() {
@@ -109,10 +145,18 @@ private:
 
         auto networks = parseNetworks(result);
 
+        QString currentSsid, currentIp;
+        getCurrentConnection(currentSsid, currentIp);
+
         for (const auto &net : networks) {
             int score = calculateScore(net, networks);
 
-            output->append("SSID: " + net.ssid);
+            QString displayName = net.ssid;
+            if (net.ssid == currentSsid && !currentIp.isEmpty()) {
+                displayName += " (" + currentIp + ")";
+            }
+
+            output->append("SSID: " + displayName);
             output->append("Auth: " + net.auth);
             output->append("Score: " + QString::number(score) + "/100 (" + getRisk(score) + ")");
 
