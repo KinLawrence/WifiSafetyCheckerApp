@@ -29,43 +29,43 @@ import java.util.regex.Pattern;
  * safety score (0-100), and lets the user export the results to TXT or CSV.
  *
  * Scoring algorithm (mirrors the Python implementation):
- *   Base score: 100
- *   - Open authentication        : -50
- *   - WEP encryption             : -40
- *   - Suspicious SSID keywords   : -10  (free / guest / wifi)
- *   - Duplicate SSID (Evil Twin) : -30
+ * Base score: 100
+ * - Open authentication : -50
+ * - WEP encryption : -40
+ * - Suspicious SSID keywords : -10 (free / guest / wifi)
+ * - Duplicate SSID (Evil Twin) : -30
  *
  * Risk levels:
- *   HIGH   (score < 50)  — red
- *   MEDIUM (score 50-79) — orange / yellow
- *   LOW    (score ≥ 80)  — green
+ * HIGH (score < 50) — red
+ * MEDIUM (score 50-79) — orange / yellow
+ * LOW (score ≥ 80) — green
  *
  * Build & run (Java 17+ with JavaFX 17+ on the module path):
- *   javac --module-path <javafx-sdk>/lib --add-modules javafx.controls App.java
- *   java  --module-path <javafx-sdk>/lib --add-modules javafx.controls App
+ * javac --module-path <javafx-sdk>/lib --add-modules javafx.controls App.java
+ * java --module-path <javafx-sdk>/lib --add-modules javafx.controls App
  */
 public class App extends Application {
 
     // ─── Palette ──────────────────────────────────────────────────────────────
-    private static final String BG_DARK        = "#0f0f1a";
-    private static final String BG_CARD        = "#1a1a2e";
-    private static final String BG_HEADER      = "#16213e";
-    private static final String ACCENT_BLUE    = "#0f3460";
-    private static final String ACCENT_CYAN    = "#00d4ff";
-    private static final String ACCENT_GREEN   = "#2ecc71";
-    private static final String ACCENT_ORANGE  = "#e67e22";
-    private static final String TEXT_PRIMARY   = "#e0e0e0";
+    private static final String BG_DARK = "#0f0f1a";
+    private static final String BG_CARD = "#1a1a2e";
+    private static final String BG_HEADER = "#16213e";
+    private static final String ACCENT_BLUE = "#0f3460";
+    private static final String ACCENT_CYAN = "#00d4ff";
+    private static final String ACCENT_GREEN = "#2ecc71";
+    private static final String ACCENT_ORANGE = "#e67e22";
+    private static final String TEXT_PRIMARY = "#e0e0e0";
     private static final String TEXT_SECONDARY = "#7f8c8d";
-    private static final String BTN_SCAN_BG    = "#2ecc71";
-    private static final String BTN_EXPORT_BG  = "#3498db";
+    private static final String BTN_SCAN_BG = "#2ecc71";
+    private static final String BTN_EXPORT_BG = "#3498db";
 
     // ─── UI Nodes ─────────────────────────────────────────────────────────────
-    private Label        clockLabel;
-    private TextArea     outputArea;
-    private Button       scanBtn;
-    private Button       exportBtn;
-    private ProgressBar  progressBar;
-    private Label        statusLabel;
+    private Label clockLabel;
+    private TextArea outputArea;
+    private Button scanBtn;
+    private Button exportBtn;
+    private ProgressBar progressBar;
+    private Label statusLabel;
 
     // ─── State ────────────────────────────────────────────────────────────────
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
@@ -75,7 +75,7 @@ public class App extends Application {
     });
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  JavaFX Entry Point
+    // JavaFX Entry Point
     // ══════════════════════════════════════════════════════════════════════════
 
     public static void main(String[] args) {
@@ -103,7 +103,7 @@ public class App extends Application {
         double screenW = javafx.stage.Screen.getPrimary().getVisualBounds().getWidth();
         double screenH = javafx.stage.Screen.getPrimary().getVisualBounds().getHeight();
         Scene scene = new Scene(root, screenW / 2, screenH / 2);
-        scene.getStylesheets();          // no external sheet needed
+        scene.getStylesheets(); // no external sheet needed
 
         stage.setScene(scene);
         stage.centerOnScreen();
@@ -120,36 +120,32 @@ public class App extends Application {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  UI Builders
+    // UI Builders
     // ══════════════════════════════════════════════════════════════════════════
 
     /** Top header: app title + real-time clock */
     private VBox buildHeader() {
         Label titleLabel = new Label("🛡️  WiFi Safety Checker");
         titleLabel.setStyle(
-            "-fx-font-family: 'Segoe UI'; -fx-font-size: 22px; -fx-font-weight: bold;" +
-            "-fx-text-fill: " + ACCENT_CYAN + ";"
-        );
+                "-fx-font-family: 'Segoe UI'; -fx-font-size: 22px; -fx-font-weight: bold;" +
+                        "-fx-text-fill: " + ACCENT_CYAN + ";");
 
         clockLabel = new Label("System Time: --:--:--");
         clockLabel.setStyle(
-            "-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-font-style: italic;" +
-            "-fx-text-fill: " + TEXT_SECONDARY + ";"
-        );
+                "-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-font-style: italic;" +
+                        "-fx-text-fill: " + TEXT_SECONDARY + ";");
 
         statusLabel = new Label("Ready — press Scan Networks to begin.");
         statusLabel.setStyle(
-            "-fx-font-family: 'Segoe UI'; -fx-font-size: 11px;" +
-            "-fx-text-fill: " + TEXT_SECONDARY + ";"
-        );
+                "-fx-font-family: 'Segoe UI'; -fx-font-size: 11px;" +
+                        "-fx-text-fill: " + TEXT_SECONDARY + ";");
 
         // Thin gradient separator line
         Region separator = new Region();
         separator.setPrefHeight(2);
         separator.setStyle(
-            "-fx-background-color: linear-gradient(to right, " +
-            ACCENT_CYAN + ", transparent);"
-        );
+                "-fx-background-color: linear-gradient(to right, " +
+                        ACCENT_CYAN + ", transparent);");
 
         VBox header = new VBox(4, titleLabel, clockLabel, statusLabel, separator);
         header.setStyle("-fx-background-color: " + BG_HEADER + ";");
@@ -164,31 +160,28 @@ public class App extends Application {
         outputArea.setWrapText(false);
         outputArea.setFont(Font.font("Consolas", 12));
         outputArea.setStyle(
-            "-fx-background-color: " + BG_CARD + ";" +
-            "-fx-control-inner-background: " + BG_CARD + ";" +
-            "-fx-text-fill: " + TEXT_PRIMARY + ";" +
-            "-fx-border-color: #2a2a4a;" +
-            "-fx-border-radius: 6;" +
-            "-fx-background-radius: 6;"
-        );
+                "-fx-background-color: " + BG_CARD + ";" +
+                        "-fx-control-inner-background: " + BG_CARD + ";" +
+                        "-fx-text-fill: " + TEXT_PRIMARY + ";" +
+                        "-fx-border-color: #2a2a4a;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-background-radius: 6;");
         outputArea.setText(
-            "  Network scan results will appear here after you click \"Scan Networks\".\n\n" +
-            "  Each line shows:\n" +
-            "    SSID (network name)  →  Security Score: X/100  [RISK LEVEL]\n\n" +
-            "  Scoring deductions:\n" +
-            "    Open authentication .............. -50\n" +
-            "    WEP encryption ................... -40\n" +
-            "    Suspicious SSID (free/guest/wifi) . -10\n" +
-            "    Duplicate SSID (Evil Twin risk) .. -30\n"
-        );
+                "  Network scan results will appear here after you click \"Scan Networks\".\n\n" +
+                        "  Each line shows:\n" +
+                        "    SSID (network name)  →  Security Score: X/100  [RISK LEVEL]\n\n" +
+                        "  Scoring deductions:\n" +
+                        "    Open authentication .............. -50\n" +
+                        "    WEP encryption ................... -40\n" +
+                        "    Suspicious SSID (free/guest/wifi) . -10\n" +
+                        "    Duplicate SSID (Evil Twin risk) .. -30\n");
 
         progressBar = new ProgressBar(0);
         progressBar.setVisible(false);
         progressBar.setPrefWidth(Double.MAX_VALUE);
         progressBar.setStyle(
-            "-fx-accent: " + ACCENT_CYAN + ";" +
-            "-fx-background-color: #2a2a4a;"
-        );
+                "-fx-accent: " + ACCENT_CYAN + ";" +
+                        "-fx-background-color: #2a2a4a;");
 
         VBox panel = new VBox(0, progressBar, outputArea);
         VBox.setVgrow(outputArea, Priority.ALWAYS);
@@ -202,7 +195,7 @@ public class App extends Application {
     private HBox buildButtonBar(Stage stage) {
         scanBtn = styledButton("🔍  Scan Networks", BTN_SCAN_BG);
         exportBtn = styledButton("💾  Export Results…", BTN_EXPORT_BG);
-        exportBtn.setDisable(true);         // enabled after first scan
+        exportBtn.setDisable(true); // enabled after first scan
 
         scanBtn.setOnAction(e -> runScan());
         exportBtn.setOnAction(e -> exportResults(stage));
@@ -217,24 +210,22 @@ public class App extends Application {
     /** Factory for styled buttons */
     private Button styledButton(String text, String bgColor) {
         Button btn = new Button(text);
-        String base =
-            "-fx-background-color: " + bgColor + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-family: 'Segoe UI';" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12 30 12 30;" +
-            "-fx-background-radius: 8;" +
-            "-fx-cursor: hand;";
-        String hover =
-            "-fx-background-color: derive(" + bgColor + ", -15%);" +
-            "-fx-text-fill: white;" +
-            "-fx-font-family: 'Segoe UI';" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12 30 12 30;" +
-            "-fx-background-radius: 8;" +
-            "-fx-cursor: hand;";
+        String base = "-fx-background-color: " + bgColor + ";" +
+                "-fx-text-fill: white;" +
+                "-fx-font-family: 'Segoe UI';" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 12 30 12 30;" +
+                "-fx-background-radius: 8;" +
+                "-fx-cursor: hand;";
+        String hover = "-fx-background-color: derive(" + bgColor + ", -15%);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-family: 'Segoe UI';" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 12 30 12 30;" +
+                "-fx-background-radius: 8;" +
+                "-fx-cursor: hand;";
         btn.setStyle(base);
         btn.setOnMouseEntered(e -> btn.setStyle(hover));
         btn.setOnMouseExited(e -> btn.setStyle(base));
@@ -244,7 +235,7 @@ public class App extends Application {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  Real-Time Clock
+    // Real-Time Clock
     // ══════════════════════════════════════════════════════════════════════════
 
     private void startClock() {
@@ -256,7 +247,7 @@ public class App extends Application {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  WiFi Scanning & Analysis (runs on background thread)
+    // WiFi Scanning & Analysis (runs on background thread)
     // ══════════════════════════════════════════════════════════════════════════
 
     private void runScan() {
@@ -270,7 +261,7 @@ public class App extends Application {
         Task<String> task = new Task<>() {
             @Override
             protected String call() throws Exception {
-                String raw    = scanWifi();
+                String raw = scanWifi();
                 String[] conn = getCurrentConnection();
                 return buildResults(raw, conn[0], conn[1]);
             }
@@ -282,7 +273,7 @@ public class App extends Application {
             scanBtn.setDisable(false);
             exportBtn.setDisable(false);
             setStatus("Scan complete — " +
-                      LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         });
 
         task.setOnFailed(e -> {
@@ -299,7 +290,7 @@ public class App extends Application {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  Core Logic
+    // Core Logic
     // ══════════════════════════════════════════════════════════════════════════
 
     /**
@@ -320,7 +311,7 @@ public class App extends Application {
      */
     private String[] getCurrentConnection() {
         String ssid = "";
-        String ip   = "";
+        String ip = "";
         String ifName = "";
 
         try {
@@ -334,18 +325,19 @@ public class App extends Application {
             for (String line : out.split("\\r?\\n")) {
                 if (line.contains("Name") && !line.contains("SSID")) {
                     String[] parts = line.split(":", 2);
-                    if (parts.length > 1) ifName = parts[1].trim();
+                    if (parts.length > 1)
+                        ifName = parts[1].trim();
                 } else if (line.contains("SSID") && !line.contains("BSSID")) {
                     String[] parts = line.split(":", 2);
-                    if (parts.length > 1) ssid = parts[1].trim();
+                    if (parts.length > 1)
+                        ssid = parts[1].trim();
                 }
             }
 
             // ── get IP for the interface ──
             if (!ifName.isEmpty()) {
                 ProcessBuilder pb2 = new ProcessBuilder(
-                    "netsh", "interface", "ip", "show", "config", "name=" + ifName
-                );
+                        "netsh", "interface", "ip", "show", "config", "name=" + ifName);
                 pb2.redirectErrorStream(true);
                 Process proc2 = pb2.start();
                 String out2 = readStream(proc2.getInputStream());
@@ -364,7 +356,7 @@ public class App extends Application {
         } catch (Exception ignored) {
         }
 
-        return new String[]{ssid, ip};
+        return new String[] { ssid, ip };
     }
 
     /**
@@ -385,19 +377,22 @@ public class App extends Application {
                     current = new LinkedHashMap<>();
                 }
                 String[] parts = line.split(":", 2);
-                if (parts.length > 1) current.put("SSID", parts[1].trim());
+                if (parts.length > 1)
+                    current.put("SSID", parts[1].trim());
 
             } else if (line.contains("Authentication")) {
                 String[] parts = line.split(":", 2);
-                if (parts.length > 1) current.put("Auth", parts[1].trim());
+                if (parts.length > 1)
+                    current.put("Auth", parts[1].trim());
             }
         }
-        if (!current.isEmpty()) networks.add(current);
+        if (!current.isEmpty())
+            networks.add(current);
 
         if (networks.isEmpty()) {
-            return "No WiFi networks found.\n\nMake sure:\n" +
-                   "  • Your wireless adapter is enabled\n" +
-                   "  • You are running on Windows\n";
+            return "No Wi-Fi networks found.\n\nMake sure:\n" +
+                    "  • Your wireless adapter is enabled\n" +
+                    "  • You are running on Windows\n";
         }
 
         // ── Score & format ──
@@ -411,14 +406,18 @@ public class App extends Application {
             String auth = net.getOrDefault("Auth", "Unknown");
 
             // Penalties
-            if (auth.contains("Open")) score -= 50;
-            if (auth.contains("WEP"))  score -= 40;
-            if (ssidHasSuspiciousKeyword(ssid)) score -= 10;
+            if (auth.contains("Open"))
+                score -= 50;
+            if (auth.contains("WEP"))
+                score -= 40;
+            if (ssidHasSuspiciousKeyword(ssid))
+                score -= 10;
 
             long dupes = networks.stream()
-                .filter(n -> ssid.equals(n.get("SSID")))
-                .count();
-            if (dupes > 1) score -= 30;
+                    .filter(n -> ssid.equals(n.get("SSID")))
+                    .count();
+            if (dupes > 1)
+                score -= 30;
 
             score = Math.max(score, 0);
 
@@ -431,41 +430,41 @@ public class App extends Application {
             String risk = riskLabel(score);
 
             sb.append(String.format("%-50s  %3d/100  %s%n",
-                truncate(displayName, 48), score, risk));
+                    truncate(displayName, 48), score, risk));
         }
 
         sb.append("\n").append("─".repeat(70)).append("\n");
         sb.append(String.format("Total networks scanned: %d%n", networks.size()));
         sb.append(String.format("Scan time: %s%n",
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
 
         return sb.toString();
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  Export
+    // Export
     // ══════════════════════════════════════════════════════════════════════════
 
     private void exportResults(Stage owner) {
         String content = outputArea.getText().strip();
         if (content.isBlank()) {
             showAlert(Alert.AlertType.WARNING, "No Results",
-                "Please run a scan before exporting.");
+                    "Please run a scan before exporting.");
             return;
         }
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Save Scan Results");
         fc.setInitialFileName("wifi_scan_" +
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")));
         fc.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Text files", "*.txt"),
-            new FileChooser.ExtensionFilter("CSV files", "*.csv"),
-            new FileChooser.ExtensionFilter("All files", "*.*")
-        );
+                new FileChooser.ExtensionFilter("Text files", "*.txt"),
+                new FileChooser.ExtensionFilter("CSV files", "*.csv"),
+                new FileChooser.ExtensionFilter("All files", "*.*"));
 
         File file = fc.showSaveDialog(owner);
-        if (file == null) return;
+        if (file == null)
+            return;
 
         try {
             if (file.getName().toLowerCase().endsWith(".csv")) {
@@ -474,10 +473,10 @@ public class App extends Application {
                 exportAsTxt(file, content);
             }
             showAlert(Alert.AlertType.INFORMATION, "Export Successful",
-                "Results saved to:\n" + file.getAbsolutePath());
+                    "Results saved to:\n" + file.getAbsolutePath());
         } catch (IOException ex) {
             showAlert(Alert.AlertType.ERROR, "Export Error",
-                "Failed to save file:\n" + ex.getMessage());
+                    "Failed to save file:\n" + ex.getMessage());
         }
     }
 
@@ -485,14 +484,14 @@ public class App extends Application {
         try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8)) {
             pw.println("WiFi Safety Scan Results");
             pw.println("Date: " +
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             pw.println("-".repeat(30));
             pw.println(content);
         }
     }
 
     private void exportAsCsv(File file, String content) throws IOException {
-        // Pattern: "SSID  →  Security Score: X/100"  (original Python format)
+        // Pattern: "SSID → Security Score: X/100" (original Python format)
         // or the tabular format written by this app: row contains "X/100"
         Pattern p = Pattern.compile("^(.+?)\\s{2,}(\\d+)/100\\s+(\\S+)\\s*$");
 
@@ -501,9 +500,9 @@ public class App extends Application {
             for (String line : content.split("\\r?\\n")) {
                 Matcher m = p.matcher(line.trim());
                 if (m.matches()) {
-                    String ssid  = m.group(1).trim().replace("\"", "\"\"");
+                    String ssid = m.group(1).trim().replace("\"", "\"\"");
                     String score = m.group(2).trim();
-                    String risk  = m.group(3).trim();
+                    String risk = m.group(3).trim();
                     pw.printf("\"%s\",%s,100,%s%n", ssid, score, risk);
                 }
             }
@@ -511,7 +510,7 @@ public class App extends Application {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  Helpers
+    // Helpers
     // ══════════════════════════════════════════════════════════════════════════
 
     private boolean ssidHasSuspiciousKeyword(String ssid) {
@@ -520,8 +519,10 @@ public class App extends Application {
     }
 
     private String riskLabel(int score) {
-        if (score >= 80) return "🟢 LOW";
-        if (score >= 50) return "🟡 MEDIUM";
+        if (score >= 80)
+            return "🟢 LOW";
+        if (score >= 50)
+            return "🟡 MEDIUM";
         return "🔴 HIGH";
     }
 
@@ -531,7 +532,7 @@ public class App extends Application {
 
     private String readStream(InputStream is) throws IOException {
         try (BufferedReader br = new BufferedReader(
-                 new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                new InputStreamReader(is, StandardCharsets.UTF_8))) {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
@@ -553,11 +554,10 @@ public class App extends Application {
             // Apply dark style to the dialog
             DialogPane dp = alert.getDialogPane();
             dp.setStyle(
-                "-fx-background-color: " + BG_CARD + ";" +
-                "-fx-font-family: 'Segoe UI';" +
-                "-fx-font-size: 13px;" +
-                "-fx-text-fill: " + TEXT_PRIMARY + ";"
-            );
+                    "-fx-background-color: " + BG_CARD + ";" +
+                            "-fx-font-family: 'Segoe UI';" +
+                            "-fx-font-size: 13px;" +
+                            "-fx-text-fill: " + TEXT_PRIMARY + ";");
             alert.showAndWait();
         });
     }

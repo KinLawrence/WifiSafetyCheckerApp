@@ -15,32 +15,31 @@ import static org.junit.jupiter.api.Assertions.*;
  * required.
  *
  * Dependencies (add to classpath):
- *   - cucumber-java-7.x.jar
- *   - cucumber-junit-7.x.jar
- *   - cucumber-core-7.x.jar
- *   - junit-platform-console-standalone-1.x.jar
+ * - cucumber-java-7.x.jar
+ * - cucumber-junit-7.x.jar
+ * - cucumber-core-7.x.jar
+ * - junit-platform-console-standalone-1.x.jar
  *
  * Run with:
- *   javac -cp ".;cucumber-java-7.x.jar;cucumber-junit-7.x.jar;cucumber-core-7.x.jar;junit-platform-console-standalone-1.x.jar" App.java AppCucumberTest.java
- *   java  -cp ".;..." io.cucumber.core.cli.Main --glue "" --plugin pretty wifi_safety.feature
+ * javac -cp
+ * ".;cucumber-java-7.x.jar;cucumber-junit-7.x.jar;cucumber-core-7.x.jar;junit-platform-console-standalone-1.x.jar"
+ * App.java AppCucumberTest.java
+ * java -cp ".;..." io.cucumber.core.cli.Main --glue "" --plugin pretty
+ * wifi_safety.feature
  */
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  Runner (JUnit 4-style — Cucumber's standard entry point)
+// Runner (JUnit 4-style — Cucumber's standard entry point)
 // ══════════════════════════════════════════════════════════════════════════════
 
 @RunWith(Cucumber.class)
-@CucumberOptions(
-    features = "wifi_safety.feature",
-    glue     = "",
-    plugin   = {"pretty"}
-)
+@CucumberOptions(features = "wifi_safety.feature", glue = "", plugin = { "pretty" })
 class AppCucumberRunner {
     // Marker class — Cucumber discovers step definitions via the glue path
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  Step Definitions
+// Step Definitions
 // ══════════════════════════════════════════════════════════════════════════════
 
 class AppCucumberTest {
@@ -49,7 +48,7 @@ class AppCucumberTest {
     private App app;
     private String rawNetshOutput;
     private String buildResultsOutput;
-    private int    calculatedScore;
+    private int calculatedScore;
     private String calculatedRisk;
 
     // ── Reflection helper ───────────────────────────────────────────────────
@@ -63,30 +62,30 @@ class AppCucumberTest {
     /** Builds a minimal netsh-style output block. */
     private static String netshBlock(String ssid, String auth) {
         return "SSID 1 : " + ssid + "\r\n" +
-               "Network type            : Infrastructure\r\n" +
-               "Authentication          : " + auth + "\r\n" +
-               "Encryption              : CCMP\r\n";
+                "Network type            : Infrastructure\r\n" +
+                "Authentication          : " + auth + "\r\n" +
+                "Encryption              : CCMP\r\n";
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    //  Given
+    // Given
     // ─────────────────────────────────────────────────────────────────────────
 
-    @Given("a WiFi network with SSID {string} and authentication {string}")
+    @Given("a Wi-Fi network with SSID {string} and authentication {string}")
     public void a_wifi_network(String ssid, String auth) throws Exception {
         app = App.class.getDeclaredConstructor().newInstance();
         rawNetshOutput = netshBlock(ssid, auth);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    //  When
+    // When
     // ─────────────────────────────────────────────────────────────────────────
 
     @When("the safety score is calculated")
     public void the_safety_score_is_calculated() throws Exception {
         // Call buildResults — it parses the raw output, scores, and formats
         buildResultsOutput = (String) invoke("buildResults",
-                new Class[]{String.class, String.class, String.class},
+                new Class[] { String.class, String.class, String.class },
                 rawNetshOutput, "", "");
 
         // Extract the numeric score (pattern: "NN/100") from the output
@@ -97,14 +96,18 @@ class AppCucumberTest {
         calculatedScore = Integer.parseInt(m.group(1));
 
         // Determine risk from the output
-        if (buildResultsOutput.contains("HIGH"))       calculatedRisk = "HIGH";
-        else if (buildResultsOutput.contains("MEDIUM")) calculatedRisk = "MEDIUM";
-        else if (buildResultsOutput.contains("LOW"))    calculatedRisk = "LOW";
-        else fail("No risk level found in output:\n" + buildResultsOutput);
+        if (buildResultsOutput.contains("HIGH"))
+            calculatedRisk = "HIGH";
+        else if (buildResultsOutput.contains("MEDIUM"))
+            calculatedRisk = "MEDIUM";
+        else if (buildResultsOutput.contains("LOW"))
+            calculatedRisk = "LOW";
+        else
+            fail("No risk level found in output:\n" + buildResultsOutput);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    //  Then
+    // Then
     // ─────────────────────────────────────────────────────────────────────────
 
     @Then("the score should be {int}")
