@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
 
-// ─── Simulated WiFi Data ──────────────────────────────────────────────
+// ─── Simulated Wi-Fi Data ──────────────────────────────────────────────
 // Browsers cannot run system commands like "netsh wlan show networks".
 // We simulate realistic network data so the scoring algorithm (ported
 // from the Python desktop app) can be demonstrated faithfully.
 const SIMULATED_NETWORKS = [
-  { SSID: 'HomeNet-5G',       Auth: 'WPA3-Personal', BSSID: 'AA:BB:CC:11:22:33', Signal: 95 },
-  { SSID: 'OfficeSecure',     Auth: 'WPA2-Enterprise', BSSID: 'DD:EE:FF:44:55:66', Signal: 82 },
-  { SSID: 'CoffeeShop_WiFi',  Auth: 'Open',          BSSID: '11:22:33:AA:BB:CC', Signal: 68 },
-  { SSID: 'Free Public WiFi', Auth: 'Open',          BSSID: '44:55:66:DD:EE:FF', Signal: 54 },
-  { SSID: 'Legacy_Router',    Auth: 'WEP',           BSSID: '77:88:99:00:11:22', Signal: 40 },
-  { SSID: 'CoffeeShop_WiFi',  Auth: 'Open',          BSSID: 'AB:CD:EF:12:34:56', Signal: 62 },
-  { SSID: 'Guest_Network',    Auth: 'WPA2-Personal',  BSSID: 'FE:DC:BA:98:76:54', Signal: 75 },
-  { SSID: 'xfinitywifi',      Auth: 'Open',          BSSID: '99:88:77:66:55:44', Signal: 47 },
+  { SSID: 'HomeNet-5G', Auth: 'WPA3-Personal', BSSID: 'AA:BB:CC:11:22:33', Signal: 95 },
+  { SSID: 'OfficeSecure', Auth: 'WPA2-Enterprise', BSSID: 'DD:EE:FF:44:55:66', Signal: 82 },
+  { SSID: 'CoffeeShop_WiFi', Auth: 'Open', BSSID: '11:22:33:AA:BB:CC', Signal: 68 },
+  { SSID: 'Free Public WiFi', Auth: 'Open', BSSID: '44:55:66:DD:EE:FF', Signal: 54 },
+  { SSID: 'Legacy_Router', Auth: 'WEP', BSSID: '77:88:99:00:11:22', Signal: 40 },
+  { SSID: 'CoffeeShop_WiFi', Auth: 'Open', BSSID: 'AB:CD:EF:12:34:56', Signal: 62 },
+  { SSID: 'Guest_Network', Auth: 'WPA2-Personal', BSSID: 'FE:DC:BA:98:76:54', Signal: 75 },
+  { SSID: 'xfinitywifi', Auth: 'Open', BSSID: '99:88:77:66:55:44', Signal: 47 },
 ]
 
 const CURRENT_SSID = 'HomeNet-5G'
@@ -39,7 +39,7 @@ function analyzeNetworks(networks) {
     }
 
     // Penalty for generic names often used by phishing hotspots
-    if (['free', 'guest', 'wifi'].some((kw) => ssid.toLowerCase().includes(kw))) {
+    if (['free', 'guest', 'wifi', 'Free', 'Guest', 'WiFi', 'Wi-Fi', 'Public', 'Network', 'Public Wi-Fi', 'Public WiFi', 'Guest Wi-Fi', 'Guest WiFi', 'Free Wi-Fi', 'Free WiFi'].some((kw) => ssid.toLowerCase().includes(kw))) {
       score -= 10
       tags.push('suspicious')
     }
@@ -83,7 +83,7 @@ function scoreClass(score) {
 // ─── Export helpers ───────────────────────────────────────────────────
 function generateTxt(results) {
   const now = new Date().toLocaleString()
-  let txt = `WiFi Safety Scan Results\nDate: ${now}\n${'-'.repeat(40)}\n`
+  let txt = `Wi-Fi Safety Scan Results\nDate: ${now}\n${'-'.repeat(40)}\n`
   results.forEach((r) => {
     const name = r.isConnected ? `${r.ssid} (${r.ip})` : r.ssid
     txt += `${name} → Security Score: ${r.score}/100\n`
@@ -297,11 +297,11 @@ export default function App() {
   // Derived stats
   const stats = results
     ? {
-        total: results.length,
-        safe: results.filter((r) => r.score >= 80).length,
-        warning: results.filter((r) => r.score >= 50 && r.score < 80).length,
-        danger: results.filter((r) => r.score < 50).length,
-      }
+      total: results.length,
+      safe: results.filter((r) => r.score >= 80).length,
+      warning: results.filter((r) => r.score >= 50 && r.score < 80).length,
+      danger: results.filter((r) => r.score < 50).length,
+    }
     : null
 
   const formattedTime = time.toLocaleDateString('en-US', {
@@ -317,7 +317,7 @@ export default function App() {
         <div className="container header-inner">
           <div className="header-brand">
             <div className="header-icon">🛡️</div>
-            <h1 className="header-title">WiFi Safety Checker</h1>
+            <h1 className="header-title">Wi-Fi Safety Checker</h1>
           </div>
           <div className="header-clock" aria-live="polite">
             {formattedTime}
@@ -332,7 +332,7 @@ export default function App() {
           <section className="hero">
             <p className="hero-subtitle">Network Security Scanner</p>
             <h2 className="hero-heading">
-              Evaluate the safety of nearby WiFi networks
+              Evaluate the safety of nearby Wi-Fi networks
             </h2>
             <p className="hero-description">
               Scan, score, and identify risky wireless networks. Detect open
@@ -408,7 +408,7 @@ export default function App() {
               <h3 className="empty-heading">No scan results yet</h3>
               <p className="empty-text">
                 Click &quot;Scan Networks&quot; to discover and evaluate nearby
-                WiFi networks.
+                Wi-Fi networks.
               </p>
             </div>
           )}
@@ -419,11 +419,11 @@ export default function App() {
       <footer className="app-footer">
         <div className="container">
           <p className="footer-text">
-            WiFi Safety Checker — React Edition
+            Wi-Fi Safety Checker — React Edition
           </p>
           <p className="footer-note">
             Uses simulated network data for demonstration (browsers cannot
-            access system WiFi interfaces)
+            access system Wi-Fi interfaces)
           </p>
         </div>
       </footer>
