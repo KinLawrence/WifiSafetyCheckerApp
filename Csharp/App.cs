@@ -16,9 +16,9 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 
 /// <summary>
-/// WiFi Safety Checker — WPF Edition (C#/.NET)
+/// Wi-Fi Safety Checker — WPF Edition (C#/.NET)
 ///
-/// A desktop application that scans nearby WiFi networks using the Windows
+/// A desktop application that scans nearby Wi-Fi networks using the Windows
 /// <c>netsh</c> command, evaluates each network's security posture, assigns a
 /// safety score (0–100), and lets the user export the results to TXT or CSV.
 ///
@@ -45,7 +45,7 @@ namespace WifiSafetyChecker
     //  Data Model
     // ════════════════════════════════════════════════════════════════════════
 
-    /// <summary>Represents a single WiFi network parsed from netsh output.</summary>
+    /// <summary>Represents a single Wi-Fi network parsed from netsh output.</summary>
     public class Network
     {
         public string Ssid { get; set; } = "Unknown SSID";
@@ -174,7 +174,7 @@ namespace WifiSafetyChecker
         // ── Constructor ─────────────────────────────────────────────────
         public MainWindow()
         {
-            Title  = "WiFi Safety Checker";
+            Title  = "Wi-Fi Safety Checker";
             Width  = SystemParameters.PrimaryScreenWidth  / 2;
             Height = SystemParameters.PrimaryScreenHeight / 2;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -211,7 +211,7 @@ namespace WifiSafetyChecker
         {
             var titleLabel = new TextBlock
             {
-                Text       = "🛡️  WiFi Safety Checker",
+                Text       = "🛡️  Wi-Fi Safety Checker",
                 FontFamily = new FontFamily("Segoe UI"),
                 FontSize   = 22,
                 FontWeight = FontWeights.Bold,
@@ -379,7 +379,7 @@ namespace WifiSafetyChecker
         }
 
         // ════════════════════════════════════════════════════════════════
-        //  WiFi Scanning & Analysis (async to keep UI responsive)
+        //  Wi-Fi Scanning & Analysis (async to keep UI responsive)
         // ════════════════════════════════════════════════════════════════
 
         private async void RunScan()
@@ -438,7 +438,7 @@ namespace WifiSafetyChecker
             return output;
         }
 
-        /// <summary>Retrieves the currently connected WiFi SSID and local IP.</summary>
+        /// <summary>Retrieves the currently connected Wi-Fi SSID and local IP.</summary>
         private static (string ssid, string ip) GetCurrentConnection()
         {
             string ssid = "", ip = "", ifName = "";
@@ -525,7 +525,7 @@ namespace WifiSafetyChecker
 
             if (networks.Count == 0)
             {
-                return "No WiFi networks found.\n\nMake sure:\n" +
+                return "No Wi-Fi networks found.\n\nMake sure:\n" +
                        "  • Your wireless adapter is enabled\n" +
                        "  • You are running on Windows\n";
             }
@@ -601,7 +601,7 @@ namespace WifiSafetyChecker
         private static void ExportAsTxt(string path, string content)
         {
             using var writer = new StreamWriter(path, false, Encoding.UTF8);
-            writer.WriteLine("WiFi Safety Scan Results");
+            writer.WriteLine("Wi-Fi Safety Scan Results");
             writer.WriteLine($"Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             writer.WriteLine(new string('-', 30));
             writer.Write(content);
