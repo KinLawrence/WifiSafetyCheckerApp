@@ -43,7 +43,7 @@ void test_duplicate_ssid_penalty() {
 }
 
 int main() {
-    std::cout << "Running WiFi Checker Tests...\n";
+    std::cout << "Running Wi-Fi Checker Tests...\n";
     
     test_parseNetworks();
     test_secure_network_score();

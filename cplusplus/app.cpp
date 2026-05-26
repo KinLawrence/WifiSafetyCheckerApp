@@ -115,7 +115,7 @@ void getCurrentConnection(QString &currentSsid, QString &currentIp) {
 class WifiChecker : public QWidget {
 public:
     WifiChecker() {
-        setWindowTitle("WiFi Safety Checker (Qt)");
+        setWindowTitle("Wi-Fi Safety Checker (Qt)");
 
         QVBoxLayout *layout = new QVBoxLayout(this);
 
@@ -135,7 +135,7 @@ private:
 
     void scanNetworks() {
         output->clear();
-        output->append("Scanning WiFi networks...\n");
+        output->append("Scanning Wi-Fi networks...\n");
 
         QProcess process;
         process.start("netsh", QStringList() << "wlan" << "show" << "networks" << "mode=bssid");
