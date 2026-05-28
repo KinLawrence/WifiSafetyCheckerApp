@@ -16,7 +16,7 @@ const SIMULATED_NETWORKS = [
 ]
 
 const CURRENT_SSID = 'HomeNet-5G'
-const CURRENT_IP = '192.168.1.42'
+const CURRENT_IP = '111.111.111.111'//'192.168.xxx.xxx'
 
 // ─── Scoring Logic (matches Python app.py) ────────────────────────────
 function analyzeNetworks(networks) {
