@@ -1,5 +1,5 @@
 """
-Pytest TDD tests for app.py (WiFi Safety Checker).
+Pytest TDD tests for app.py (Wi-Fi Safety Checker).
 
 Uses pytest fixtures and unittest.mock to patch the OS-level scan functions,
 letting us verify the scoring logic in isolation.

@@ -7,7 +7,7 @@ import re
 
 def scan_wifi():
     """
-    Scans for available WiFi networks using the Windows netsh command.
+    Scans for available Wi-Fi networks using the Windows netsh command.
     Returns the raw output from the command.
     """
     # Execute the netsh command to show available wireless networks
@@ -17,7 +17,7 @@ def scan_wifi():
 
 def get_current_connection():
     """
-    Retrieves the currently connected WiFi SSID and its local IP address.
+    Retrieves the currently connected Wi-Fi SSID and its local IP address.
     """
     ssid = ""
     ip = ""
@@ -53,7 +53,7 @@ def get_current_connection():
 
 def analyze(output_widget):
     """
-    Parses the WiFi scan data, calculates a safety score for each network,
+    Parses the Wi-Fi scan data, calculates a safety score for each network,
     and displays the results in the provided text widget.
     """
     # Clear previous results from the output window
@@ -160,7 +160,7 @@ def export_results(output_widget):
             else:
                 # Export as TXT
                 with open(file_path, "w", encoding="utf-8") as file:
-                    file.write(f"WiFi Safety Scan Results\n")
+                    file.write(f"Wi-Fi Safety Scan Results\n")
                     file.write(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
                     file.write("-" * 30 + "\n")
                     file.write(content)
@@ -171,12 +171,12 @@ def export_results(output_widget):
 
 def main():
     """
-    Main entry point for the WiFi Safety Checker application.
+    Main entry point for the Wi-Fi Safety Checker application.
     Initializes the GUI and handles the main event loop.
     """
     # Initialize the main window
     root = tk.Tk()
-    root.title("WiFi Safety Checker")
+    root.title("Wi-Fi Safety Checker")
 
     # Enlarge the GUI to 1/4 of the screen (1/2 width and 1/2 height)
     screen_width = root.winfo_screenwidth()
