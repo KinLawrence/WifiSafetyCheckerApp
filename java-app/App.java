@@ -22,9 +22,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * WiFi Safety Checker — JavaFX Edition
+ * Wi-Fi Safety Checker — JavaFX Edition
  *
- * A desktop application that scans nearby WiFi networks using the Windows
+ * A desktop application that scans nearby Wi-Fi networks using the Windows
  * `netsh` command, evaluates each network's security posture, assigns a
  * safety score (0-100), and lets the user export the results to TXT or CSV.
  *
@@ -84,7 +84,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("WiFi Safety Checker");
+        stage.setTitle("Wi-Fi Safety Checker");
 
         // ── Root layout ──
         BorderPane root = new BorderPane();
@@ -125,7 +125,7 @@ public class App extends Application {
 
     /** Top header: app title + real-time clock */
     private VBox buildHeader() {
-        Label titleLabel = new Label("🛡️  WiFi Safety Checker");
+        Label titleLabel = new Label("🛡️  Wi-Fi Safety Checker");
         titleLabel.setStyle(
                 "-fx-font-family: 'Segoe UI'; -fx-font-size: 22px; -fx-font-weight: bold;" +
                         "-fx-text-fill: " + ACCENT_CYAN + ";");
@@ -247,7 +247,7 @@ public class App extends Application {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    // WiFi Scanning & Analysis (runs on background thread)
+    // Wi-Fi Scanning & Analysis (runs on background thread)
     // ══════════════════════════════════════════════════════════════════════════
 
     private void runScan() {
@@ -306,7 +306,7 @@ public class App extends Application {
     }
 
     /**
-     * Retrieves the currently connected WiFi SSID and local IP address.
+     * Retrieves the currently connected Wi-Fi SSID and local IP address.
      * Returns String[2] = { ssid, ip }.
      */
     private String[] getCurrentConnection() {
@@ -482,7 +482,7 @@ public class App extends Application {
 
     private void exportAsTxt(File file, String content) throws IOException {
         try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8)) {
-            pw.println("WiFi Safety Scan Results");
+            pw.println("Wi-Fi Safety Scan Results");
             pw.println("Date: " +
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             pw.println("-".repeat(30));

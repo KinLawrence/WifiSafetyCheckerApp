@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Cucumber BDD step definitions for App.java (WiFi Safety Checker).
+ * Cucumber BDD step definitions for App.java (Wi-Fi Safety Checker).
  *
  * These steps map to the Gherkin scenarios in wifi_safety.feature and exercise
  * the private scoring/risk logic inside App via reflection — no JavaFX toolkit

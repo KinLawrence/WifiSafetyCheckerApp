@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for App.java (WiFi Safety Checker — JavaFX Edition).
+ * Unit tests for App.java (Wi-Fi Safety Checker — JavaFX Edition).
  *
  * Because the core logic methods (ssidHasSuspiciousKeyword, riskLabel,
  * truncate, buildResults, readStream) are private members of the App class,
@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * Compile & run (JUnit 5 Platform Console Launcher on the classpath):
  *
- *   javac -cp junit-platform-console-standalone-1.x.x.jar App.java AppTest.java
- *   java  -cp .;junit-platform-console-standalone-1.x.x.jar \
- *         org.junit.platform.console.ConsoleLauncher \
- *         --select-class=AppTest
+ * javac -cp junit-platform-console-standalone-1.x.x.jar App.java AppTest.java
+ * java -cp .;junit-platform-console-standalone-1.x.x.jar \
+ * org.junit.platform.console.ConsoleLauncher \
+ * --select-class=AppTest
  *
  * (Replace ; with : on Linux/macOS.)
  *
@@ -34,9 +34,9 @@ class AppTest {
 
     // ── Shared instance used for all reflection calls ──────────────────────────
     // We cannot call new App() because JavaFX Application constructor requires
-    // the toolkit to be initialized.  We use Reflection + Unsafe/allocateInstance
+    // the toolkit to be initialized. We use Reflection + Unsafe/allocateInstance
     // -style workaround: sun.misc.Unsafe is fragile, so instead we subclass
-    // and instantiate a plain Object, then cast.  The cleanest portable option
+    // and instantiate a plain Object, then cast. The cleanest portable option
     // for private-method testing without touching prod code is to create an App
     // instance via its no-arg constructor (which JavaFX registers but does NOT
     // start the toolkit in).
@@ -51,7 +51,7 @@ class AppTest {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  Helper: reflective method invoker
+    // Helper: reflective method invoker
     // ══════════════════════════════════════════════════════════════════════════
 
     /** Invokes a private instance method by name and parameter types. */
@@ -63,7 +63,7 @@ class AppTest {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  ssidHasSuspiciousKeyword
+    // ssidHasSuspiciousKeyword
     // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
@@ -72,7 +72,7 @@ class AppTest {
 
         private boolean check(String ssid) throws Exception {
             return (boolean) invoke("ssidHasSuspiciousKeyword",
-                    new Class[]{String.class}, ssid);
+                    new Class[] { String.class }, ssid);
         }
 
         @Test
@@ -122,7 +122,7 @@ class AppTest {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  riskLabel
+    // riskLabel
     // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
@@ -130,7 +130,7 @@ class AppTest {
     class RiskLabelTests {
 
         private String risk(int score) throws Exception {
-            return (String) invoke("riskLabel", new Class[]{int.class}, score);
+            return (String) invoke("riskLabel", new Class[] { int.class }, score);
         }
 
         @Test
@@ -171,13 +171,13 @@ class AppTest {
 
         @ParameterizedTest(name = "score={0} → {1}")
         @CsvSource({
-            "100, LOW",
-            "80,  LOW",
-            "65,  MEDIUM",
-            "50,  MEDIUM",
-            "49,  HIGH",
-            "10,  HIGH",
-            "0,   HIGH"
+                "100, LOW",
+                "80,  LOW",
+                "65,  MEDIUM",
+                "50,  MEDIUM",
+                "49,  HIGH",
+                "10,  HIGH",
+                "0,   HIGH"
         })
         @DisplayName("Parameterized risk boundaries")
         void parameterized(int score, String expected) throws Exception {
@@ -186,7 +186,7 @@ class AppTest {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  truncate
+    // truncate
     // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
@@ -195,7 +195,7 @@ class AppTest {
 
         private String trunc(String s, int max) throws Exception {
             return (String) invoke("truncate",
-                    new Class[]{String.class, int.class}, s, max);
+                    new Class[] { String.class, int.class }, s, max);
         }
 
         @Test
@@ -234,7 +234,7 @@ class AppTest {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  readStream
+    // readStream
     // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
@@ -245,7 +245,7 @@ class AppTest {
             InputStream is = new ByteArrayInputStream(
                     content.getBytes(StandardCharsets.UTF_8));
             return (String) invoke("readStream",
-                    new Class[]{InputStream.class}, is);
+                    new Class[] { InputStream.class }, is);
         }
 
         @Test
@@ -277,7 +277,7 @@ class AppTest {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  buildResults  — scoring & formatting logic
+    // buildResults — scoring & formatting logic
     // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
@@ -287,23 +287,23 @@ class AppTest {
         private String build(String raw, String currentSsid, String currentIp)
                 throws Exception {
             return (String) invoke("buildResults",
-                    new Class[]{String.class, String.class, String.class},
+                    new Class[] { String.class, String.class, String.class },
                     raw, currentSsid, currentIp);
         }
 
         /** Minimal valid netsh-style block for a single network. */
         private String netshBlock(String ssid, String auth) {
             return "SSID 1 : " + ssid + "\r\n" +
-                   "Network type            : Infrastructure\r\n" +
-                   "Authentication          : " + auth + "\r\n" +
-                   "Encryption              : CCMP\r\n";
+                    "Network type            : Infrastructure\r\n" +
+                    "Authentication          : " + auth + "\r\n" +
+                    "Encryption              : CCMP\r\n";
         }
 
         @Test
-        @DisplayName("Empty raw output returns 'No WiFi networks found' message")
+        @DisplayName("Empty raw output returns 'No Wi-Fi networks found' message")
         void emptyRawOutput() throws Exception {
             String result = build("", "", "");
-            assertTrue(result.contains("No WiFi networks found"));
+            assertTrue(result.contains("No Wi-Fi networks found"));
         }
 
         @Test
@@ -353,7 +353,7 @@ class AppTest {
         void evilTwinDeduction() throws Exception {
             // Two blocks with identical SSID → duplicate penalty applies
             String raw = netshBlock("TwinNet", "WPA2-Personal")
-                       + netshBlock("TwinNet", "WPA2-Personal");
+                    + netshBlock("TwinNet", "WPA2-Personal");
             String result = build(raw, "", "");
             // 100 - 30 (duplicate) = 70/100 MEDIUM
             assertTrue(result.contains("70/100"), "Expected 70/100 in: " + result);
@@ -374,7 +374,7 @@ class AppTest {
             String raw = netshBlock("HomeNet", "WPA2-Personal");
             String result = build(raw, "HomeNet", "192.168.1.5");
             assertTrue(result.contains("192.168.1.5"),
-                "Expected IP address in: " + result);
+                    "Expected IP address in: " + result);
         }
 
         @Test
@@ -383,7 +383,7 @@ class AppTest {
             String raw = netshBlock("NeighborNet", "WPA2-Personal");
             String result = build(raw, "HomeNet", "192.168.1.5");
             assertFalse(result.contains("192.168.1.5"),
-                "IP should not appear for unmatched SSID");
+                    "IP should not appear for unmatched SSID");
         }
 
         @Test
@@ -399,18 +399,18 @@ class AppTest {
         @DisplayName("Multiple distinct networks all appear in output")
         void multipleNetworksAllPresent() throws Exception {
             String raw = netshBlock("Alpha", "WPA2-Personal")
-                       + netshBlock("Beta",  "Open")
-                       + netshBlock("Gamma", "WEP");
+                    + netshBlock("Beta", "Open")
+                    + netshBlock("Gamma", "WEP");
             String result = build(raw, "", "");
             assertTrue(result.contains("Alpha"), "Alpha missing");
-            assertTrue(result.contains("Beta"),  "Beta missing");
+            assertTrue(result.contains("Beta"), "Beta missing");
             assertTrue(result.contains("Gamma"), "Gamma missing");
             assertTrue(result.contains("Total networks scanned: 3"), "Count wrong");
         }
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    //  CSV export regex pattern (tested directly, no file I/O required)
+    // CSV export regex pattern (tested directly, no file I/O required)
     // ══════════════════════════════════════════════════════════════════════════
 
     @Nested
@@ -421,8 +421,7 @@ class AppTest {
          * The same pattern used in exportAsCsv().
          * We test it independently to confirm it matches expected output rows.
          */
-        private final Pattern CSV_PATTERN =
-                Pattern.compile("^(.+?)\\s{2,}(\\d+)/100\\s+(\\S+)\\s*$");
+        private final Pattern CSV_PATTERN = Pattern.compile("^(.+?)\\s{2,}(\\d+)/100\\s+(\\S+)\\s*$");
 
         private Matcher match(String line) {
             return CSV_PATTERN.matcher(line.trim());
