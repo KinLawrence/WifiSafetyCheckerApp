@@ -240,7 +240,7 @@ function ExportModal({ results, onClose }) {
               id="format-txt-btn"
             >
               📄 TXT
-              <span className="format-label">Plain text report</span>
+              <span className="format-label">Plaintext report</span>
             </button>
             <button
               className={`format-btn ${format === 'csv' ? 'active' : ''}`}
@@ -264,7 +264,7 @@ function ExportModal({ results, onClose }) {
           </div>
         </div>
       </div>
-      {toast && <div className="toast">✓ File downloaded successfully</div>}
+      {toast && <div className="toast">✓ File downloaded successfully.</div>}
     </>
   )
 }
@@ -422,7 +422,7 @@ export default function App() {
             Wi-Fi Safety Checker — React Edition
           </p>
           <p className="footer-note">
-            Uses simulated network data for demonstration (browsers cannot
+            Uses simulated network data for demonstration only (browsers cannot
             access system Wi-Fi interfaces)
           </p>
         </div>
