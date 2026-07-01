@@ -193,7 +193,7 @@ function RadarAnimation() {
         <span className="radar-dot" style={{ top: '45%', left: '78%', animationDelay: '0.4s' }} />
         <span className="radar-dot" style={{ top: '70%', left: '35%', animationDelay: '0.8s' }} />
       </div>
-      <span className="scan-status-text scan-pulse">Scanning nearby networks…</span>
+      <span className="scan-status-text scan-pulse">Scanning networks…</span>
     </div>
   )
 }
@@ -264,7 +264,7 @@ function ExportModal({ results, onClose }) {
           </div>
         </div>
       </div>
-      {toast && <div className="toast">✓ File downloaded successfully.</div>}
+      {toast && <div className="toast">✓ File downloaded. Done!</div>}
     </>
   )
 }
@@ -375,7 +375,7 @@ export default function App() {
             <div className="stats-bar">
               <div className="stat-card">
                 <div className="stat-value neutral">{stats.total}</div>
-                <div className="stat-label">Networks Found</div>
+                <div className="stat-label">Networks Found.</div>
               </div>
               <div className="stat-card">
                 <div className="stat-value safe">{stats.safe}</div>
@@ -383,11 +383,11 @@ export default function App() {
               </div>
               <div className="stat-card">
                 <div className="stat-value warning">{stats.warning}</div>
-                <div className="stat-label">Caution</div>
+                <div className="stat-label">Caution!</div>
               </div>
               <div className="stat-card">
                 <div className="stat-value danger">{stats.danger}</div>
-                <div className="stat-label">Unsafe</div>
+                <div className="stat-label">Unsafe!!</div>
               </div>
             </div>
           )}
