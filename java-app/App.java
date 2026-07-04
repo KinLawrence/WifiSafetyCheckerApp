@@ -255,7 +255,7 @@ public class App extends Application {
         exportBtn.setDisable(true);
         progressBar.setVisible(true);
         progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-        setStatus("Scanning nearby networks…");
+        setStatus("Scanning networks…");
         outputArea.clear();
 
         Task<String> task = new Task<>() {
