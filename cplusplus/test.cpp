@@ -35,7 +35,7 @@ void test_open_network_penalty() {
 
 void test_duplicate_ssid_penalty() {
     // Tests the "Evil Twin" penalty for multiple networks sharing a name
-    QVector<Network> all = {{"CoffeeShop", "WPA2-Personal"}, {"CoffeeShop", "WPA2-Personal"}};
+    QVector<Network> all = {{"Cafe", "WPA2-Personal"}, {"CoffeeShop", "WPA2-Personal"}};
     int score = calculateScore(all[0], all);
     assert(score == 80); // 100 baseline - 20 for duplicate
     assert(getRisk(score) == "LOW RISK"); // >= 80 is LOW RISK
